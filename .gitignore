@@ -1,0 +1,13 @@
+inventory.ini
+netbox_inventory.yml
+
+*.log
+.env
+zabbix-docker/zbx_db_data/
+# NetBox Specific
+netbox-docker/.env
+netbox-docker/env/*.env
+netbox-docker/netbox-media-files/
+netbox-docker/netbox-postgres-data/
+netbox-docker/netbox-redis-data/
+

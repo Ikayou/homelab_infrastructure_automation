@@ -92,4 +92,5 @@ ansible-playbook -i netbox_inventory.yml sync_to_netbox.yml -k -K
 
 ```
 
+![playbook](./images/playbook.png)
 ---

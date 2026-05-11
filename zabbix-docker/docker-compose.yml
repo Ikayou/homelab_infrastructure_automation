@@ -42,14 +42,14 @@ services:
 
   zabbix-agent:
     image: zabbix/zabbix-agent:alpine-latest
-    # ここから重要：ホスト（VM）の情報を読み取るための設定
+    
     privileged: true
     user: root
     volumes:
       - /proc:/host/proc
       - /sys:/host/sys
       - /:/hostfs:ro
-      - /var/run/docker.sock:/var/run/docker.sock # Docker監視用
+      - /var/run/docker.sock:/var/run/docker.sock 
     environment:
       - ZBX_HOSTNAME=Ikadoc001
       - ZBX_SERVER_HOST=zabbix-server

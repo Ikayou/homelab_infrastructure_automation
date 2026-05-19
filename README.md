@@ -93,4 +93,82 @@ ansible-playbook -i netbox_inventory.yml sync_to_netbox.yml -k -K
 ```
 
 ![playbook](./images/playbook.png)
+
+
+## Container API & Monitoring Platform (FastAPI)
+
+Zusätzlich wurde eine eigene Container-Management- und Monitoring-Plattform auf Basis von **FastAPI** entwickelt. Ziel war es, eine zentrale API bereitzustellen, die Docker-Container überwacht, Metriken sammelt und Infrastrukturdaten visualisiert.
+
+Die Anwendung läuft selbst als Docker-Container und kommuniziert direkt mit der Docker Engine über den Docker Socket.
+
+### Funktionen der Container API
+
+Die FastAPI-Anwendung stellt verschiedene REST-Endpunkte bereit, um Containerinformationen zentral abzurufen und automatisierte Infrastrukturprozesse umzusetzen.
+
+### Verfügbare API-Endpunkte
+
+| Endpoint | Funktion |
+| --- | --- |
+| `/containers` | Liste aller Container |
+| `/containers/{name}` | Detailinformationen eines Containers |
+| `/containers/{name}/logs` | Abruf der Container-Logs |
+| `/containers/{name}/stats` | CPU- und RAM-Auslastung |
+| `/containers/{name}/health` | Status- und Health-Informationen |
+| `/containers/{name}/restart` | Neustart eines Containers |
+| `/metrics` | Prometheus-kompatible Metriken |
+| `/history/{name}` | Historische Monitoring-Daten aus PostgreSQL |
+
+![Fast API](./images/fastapi.png)
+
+### Monitoring & Observability
+
+Ein Hintergrund-Worker überwacht automatisch alle laufenden Container in regelmäßigen Intervallen. Dabei werden unter anderem folgende Informationen gesammelt:
+
+* Container-Status
+* RAM-Auslastung
+* CPU-Auslastung
+* Netzwerk-Traffic
+* Restart-Zähler
+
+Die gesammelten Daten werden automatisch in PostgreSQL gespeichert und anschließend über Grafana visualisiert.
+
+### Prometheus & Grafana Integration
+
+Die API exportiert zusätzlich eigene Prometheus-Metriken über den Endpoint `/metrics`.
+
+Dadurch kann Prometheus die Containerdaten automatisch per Scraping erfassen und in Grafana als Dashboard darstellen.
+
+Verwendete Technologien:
+
+* **FastAPI** – REST API & Monitoring-Service
+* **Prometheus** – Metrics Collection
+* **Grafana** – Dashboard & Visualisierung
+* **PostgreSQL** – Speicherung historischer Monitoring-Daten
+* **cAdvisor** – Container-Metriken
+* **Traefik** – HTTPS Reverse Proxy
+* **Docker SDK for Python** – Kommunikation mit der Docker Engine
+
+### Sicherheitsfunktionen
+
+Die API wurde zusätzlich abgesichert durch:
+
+* API-Key Authentifizierung
+* HTTPS/TLS über Traefik
+* Reverse Proxy Routing über eigene lokale Domains (`api.local`, `grafana.local`, `prometheus.local`)
+
+### Beispielhafte Monitoring-Metriken
+
+Über Prometheus und Grafana werden unter anderem folgende Werte visualisiert:
+
+* Container CPU-Auslastung
+* RAM-Verbrauch
+* Netzwerk-Durchsatz
+* Container-Status (running/stopped)
+* Historische Ressourcen-Auslastung
+
+Dadurch entstand eine produktionsnahe Monitoring-Umgebung ähnlich moderner DevOps- und Plattform-Infrastrukturen.
+
+![Grafana Dashboard](./images/grafana.png)
+![Prometheus](./images/prometheus.png)
+
 ---

@@ -223,4 +223,57 @@ Dadurch entstand eine produktionsnahe Monitoring-Umgebung ähnlich moderner DevO
 ![Grafana Dashboard](./images/grafana.png)
 ![Prometheus](./images/prometheus.png)
 
+## Tests & Qualitätssicherung
+
+Für die API wurden automatisierte Tests mit `pytest` implementiert, um wichtige Funktionen der Anwendung zuverlässig zu prüfen.
+
+Dabei werden externe Dienste wie Docker, Slack, Datenbank oder Keycloak nicht direkt verwendet, sondern durch Mock-Objekte simuliert. Dadurch können die Tests schnell, stabil und unabhängig von der Umgebung ausgeführt werden.
+
+### Getestete Funktionen
+
+- API Root Endpoint
+- Authentifizierung und Rollenprüfung
+- Container-Liste
+- Container-Details
+- Container-Logs
+- Health-Status von Containern
+- CPU- und Memory-Statistiken
+- Alert-Erkennung bei hoher Speichernutzung
+- Restart von Containern
+- Schutz kritischer Container vor Neustarts
+- Slack-Benachrichtigungen
+- CSV-Export der Monitoring-Historie
+- Monitoring Snapshot Funktion
+- Keycloak User Management
+  - Benutzer auflisten
+  - Benutzer erstellen
+  - Benutzer aktualisieren
+  - Benutzer löschen
+
+![Test](./images/test.png)
+
+### Mocking externer Dienste
+
+Für die Tests wurden verschiedene externe Komponenten simuliert:
+
+- Docker SDK
+- Slack Webhooks
+- Keycloak API
+- Datenbankzugriffe
+
+Dadurch kann die API getestet werden, ohne echte Container oder externe Systeme starten zu müssen.
+
+### Asynchrone Verarbeitung
+
+Die Slack-Benachrichtigungen wurden zusätzlich auf asynchrone HTTP-Kommunikation mit `httpx.AsyncClient` umgestellt.
+
+Dadurch blockiert die API während externer HTTP-Anfragen nicht den gesamten Request-Thread und kann mehrere Anfragen effizienter verarbeiten.
+
+Auch die asynchronen Funktionen wurden mit `pytest` getestet.
+
+### Beispiel Test-Ausführung
+
+```bash
+pytest -v
+```
 ---

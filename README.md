@@ -156,6 +156,58 @@ Die API wurde zusätzlich abgesichert durch:
 * HTTPS/TLS über Traefik
 * Reverse Proxy Routing über eigene lokale Domains (`api.local`, `grafana.local`, `prometheus.local`)
 
+## Keycloak Integration & Identity Management
+
+Zusätzlich wurde die Plattform um eine zentrale Benutzer- und Rechteverwaltung mit **Keycloak** erweitert. Ziel war es, eine produktionsnahe Authentifizierungs- und Autorisierungslösung für die FastAPI bereitzustellen.
+
+Die FastAPI wurde dabei vollständig mit Keycloak integriert und verwendet JWT-basierte Authentifizierung über OAuth2/OpenID Connect.
+
+### OAuth2 & JWT Authentication
+
+Benutzer melden sich zunächst über Keycloak an und erhalten anschließend ein JWT-Token. Dieses Token wird bei jeder API-Anfrage automatisch an die FastAPI übertragen und dort überprüft.
+
+Dabei werden unter anderem folgende Sicherheitsmechanismen verwendet:
+
+* JWT-Validierung
+* HTTPS/TLS über Traefik
+* OAuth2 Login über Swagger UI
+* Role Based Access Control (RBAC)
+* Realm-basierte Zugriffskontrolle
+
+Die FastAPI akzeptiert ausschließlich Tokens aus dem konfigurierten Keycloak-Realm. Dadurch wird verhindert, dass Benutzer aus anderen Realms auf die API zugreifen können.
+
+### Benutzerverwaltung über FastAPI
+
+Über die FastAPI wurden zusätzlich eigene Verwaltungs-Endpunkte implementiert, welche direkt mit der Keycloak Admin API kommunizieren.
+
+Dadurch können Benutzerinformationen zentral über die API verwaltet werden.
+
+### Implementierte CRUD-Funktionen
+
+| Endpoint                        | Funktion               |
+| ------------------------------- | ---------------------- |
+| `/keycloak/users`               | Benutzerliste abrufen  |
+| `/keycloak/users` (POST)        | Benutzer erstellen     |
+| `/keycloak/users/{id}` (PUT)    | Benutzer aktualisieren |
+| `/keycloak/users/{id}` (DELETE) | Benutzer löschen       |
+
+Die Berechtigungen werden dabei vollständig über Keycloak-Rollen gesteuert.
+
+Beispielsweise dürfen nur Benutzer mit der Rolle `container:admin` administrative Benutzeraktionen ausführen.
+
+### Swagger OAuth2 Login
+
+Für Tests und API-Dokumentation wurde zusätzlich Swagger UI mit OAuth2-Authentifizierung integriert.
+
+Dadurch können sich Benutzer direkt über die Weboberfläche bei Keycloak anmelden und anschließend geschützte API-Endpunkte testen.
+
+Dies simuliert moderne Backend- und Plattform-Architekturen, wie sie häufig in DevOps-, Cloud- und SaaS-Umgebungen verwendet werden.
+
+![Swagger OAuth Login](./images/login.png)
+
+![Keycloak User Management](./images/crud.png)
+
+
 ### Beispielhafte Monitoring-Metriken
 
 Über Prometheus und Grafana werden unter anderem folgende Werte visualisiert:

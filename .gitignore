@@ -10,3 +10,4 @@ netbox-docker/env/*.env
 netbox-docker/netbox-media-files/
 netbox-docker/netbox-postgres-data/
 netbox-docker/netbox-redis-data/
+traefik/certs/

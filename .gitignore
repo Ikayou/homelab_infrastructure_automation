@@ -3,6 +3,13 @@ netbox_inventory.yml
 
 *.log
 .env
+*.env
+
+__pycache__/
+*.pyc
+.venv/
+test.db
+
 zabbix-docker/zbx_db_data/
 # NetBox Specific
 netbox-docker/.env

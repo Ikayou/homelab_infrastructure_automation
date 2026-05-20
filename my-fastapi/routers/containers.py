@@ -13,11 +13,13 @@ from services.container_service import (
     build_alerts,
 )
 import httpx
+from schemas import ContainerResponse
+from schemas import ContainerResponse, ContainerStatsResponse
 
 router = APIRouter(prefix="/containers", tags=["Containers"])
 
 
-@router.get("", dependencies=[Depends(require_client_role("container:view"))])
+@router.get("",response_model=list[ContainerResponse], dependencies=[Depends(require_client_role("container:view"))])
 def list_containers():
     containers = client.containers.list(all=True)
 
@@ -77,7 +79,7 @@ def container_health(container_name: str):
     }
 
 
-@router.get("/{container_name}/stats", dependencies=[Depends(require_client_role("container:view"))])
+@router.get("/{container_name}/stats", response_model=ContainerStatsResponse, dependencies=[Depends(require_client_role("container:view"))])
 def get_container_stats(container_name: str):
     container = client.containers.get(container_name)
     stats = container.stats(stream=False)

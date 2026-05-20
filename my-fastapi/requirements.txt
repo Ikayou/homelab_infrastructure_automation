@@ -10,3 +10,4 @@ pydantic
 sqlalchemy
 pytest
 httpx
+alembic

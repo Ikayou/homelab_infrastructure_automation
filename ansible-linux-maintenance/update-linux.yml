@@ -1,7 +1,7 @@
 # update-linux.yml
 ---
 - name: Update Linux servers
-  hosts: linux_servers
+  hosts: all
   become: true
 
   tasks:

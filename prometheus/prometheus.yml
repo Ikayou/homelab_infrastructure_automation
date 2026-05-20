@@ -1,0 +1,20 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "container-api"
+    metrics_path: /metrics
+    scheme: https
+    static_configs:
+      - targets:
+          - "api.local"
+    tls_config:
+      insecure_skip_verify: true
+  - job_name: "cadvisor"
+    scheme: https
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - "cadvisor.local"
+    tls_config:
+      insecure_skip_verify: true

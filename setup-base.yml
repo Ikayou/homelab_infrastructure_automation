@@ -1,0 +1,35 @@
+---
+- name: "Initialisierung und Sicherheitskonfiguration (Berlin/Deutsch)"
+  hosts: all
+  become: yes
+  tasks:
+    - name: "Zeitzone auf Europa/Berlin setzen (via timedatectl)"
+      command: timedatectl set-timezone Europe/Berlin
+
+    - name: "System-Locale auf Deutsch setzen"
+      command: localectl set-locale LANG=de_DE.UTF-8
+
+    - name: "Tastaturlayout auf Deutsch (de) einstellen"
+      command: localectl set-x11-keymap de
+
+    - name: "Sicherstellen, dass der Benutzer 'yuika' existiert und zur Gruppe 'wheel' gehört"
+      user:
+        name: "yuika"
+        groups: "wheel"
+        append: yes
+        shell: /bin/bash
+        state: present
+
+    - name: "Alle Pakete auf den neuesten Stand bringen (dnf update)"
+      dnf:
+        name: "*"
+        state: latest
+      async: 600
+      poll: 10
+
+    - name: "Unnötige Dienste deaktivieren (Beispiel: cockpit)"
+      service:
+        name: "cockpit.socket"
+        state: stopped
+        enabled: no
+      ignore_errors: yes

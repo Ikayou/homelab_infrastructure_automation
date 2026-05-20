@@ -1,0 +1,48 @@
+---
+- name: Deploy Nginx Web Server on Port 8085
+  hosts: tags_web
+  become: yes
+  tasks:
+    - name: Install Nginx and SELinux tools
+      dnf:
+        name:
+          - nginx
+          - policycoreutils-python-utils
+        state: present
+
+    - name: Allow Port 8085 via SELinux (Shell version)
+      shell: "semanage port -a -t http_port_t -p tcp 8085 || semanage port -m -t http_port_t -p tcp 8085"
+      ignore_errors: yes
+
+    - name: Remove default config
+      file:
+        path: /etc/nginx/conf.d/default.conf
+        state: absent
+
+    - name: Copy custom configuration
+      copy:
+        content: |
+          server {
+              listen 8085;
+              server_name localhost;
+              location / {
+                  root /usr/share/nginx/html;
+                  index index.html;
+              }
+          }
+        dest: /etc/nginx/conf.d/custom.conf
+
+    - name: Deploy custom index.html
+      copy:
+        src: ./index.html
+        dest: /usr/share/nginx/html/index.html
+
+    - name: Restart Nginx to apply changes
+      service:
+        name: nginx
+        state: restarted
+        enabled: yes
+
+    - name: Open Port in Firewall
+      shell: "firewall-cmd --add-port=8085/tcp --permanent && firewall-cmd --reload"
+      ignore_errors: yes
